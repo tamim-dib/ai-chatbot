@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/chatbot.css">
+  <link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todist | Riad AI</title>
+  <style>
+    
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      💬 مساعدك الصحي الذكي
+    </div>
+
+    <div class="chat-box" id="chat-box">
+      <div class="message bot">مرحبًا 👋، أنا مساعدك الصحي. كيف أقدر أساعدك؟</div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" id="user-input" placeholder="اكتب رسالتك هنا...">
+      <button id="send-btn">إرسال</button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="calorie.html"><img src="images/calorie.png" alt="السعرات"></a>
+    <a href="chatbot.html"><img src="images/chatbot.png" alt="الشات"></a>
+    <a href="index.html"><img src="images/home.png" alt="الرئيسية"></a>
+  </nav>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    let loadingElement = null;
+
+    function addMessage(text, type) {
+      const div = document.createElement('div');
+      div.className = `message ${type}`;
+      div.textContent = text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return div;
+    }
+
+    function showLoading() {
+      loadingElement = document.createElement('div');
+      loadingElement.className = 'loading';
+      loadingElement.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+      chatBox.appendChild(loadingElement);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function hideLoading() {
+      if (loadingElement) {
+        loadingElement.remove();
+        loadingElement = null;
+      }
+    }
+
+    async function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      // إضافة رسالة المستخدم
+      addMessage(message, 'user');
+      userInput.value = '';
+      sendBtn.disabled = true;
+      showLoading();
+
+      try {
+        console.log('🔄 إرسال الرسالة:', message);
+
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: message })
+        });
+
+        console.log('📥 حالة الاستجابة:', response.status);
+
+        // التحقق من نوع المحتوى
+        const contentType = response.headers.get('content-type');
+        console.log('📄 نوع المحتوى:', contentType);
+
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('الاستجابة ليست JSON. ربما هناك خطأ في المسار.');
+        }
+
+        const data = await response.json();
+        console.log('✅ البيانات المستلمة:', data);
+
+        hideLoading();
+
+        if (data.reply) {
+          addMessage(data.reply, 'bot');
+        } else if (data.error) {
+          addMessage('⚠️ خطأ: ' + data.error, 'error');
+        }
+
+      } catch (err) {
+        hideLoading();
+        console.error('❌ خطأ:', err);
+        addMessage('⚠️ فشل الاتصال بالخادم: ' + err.message, 'error');
+      }
+
+      sendBtn.disabled = false;
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    
+    userInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    // تركيز تلقائي على حقل الإدخال
+    userInput.focus();
+  </script>
+</body>
+</html>

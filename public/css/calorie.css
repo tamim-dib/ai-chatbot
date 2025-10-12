@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Fustat&display=swap');
+
+body {
+    background-color: #e6f0ff; /* light blue background */
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto Condensed", sans-serif;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 50%;
+    height: 160px;
+    background-color: #001f3f; /* navy */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 30px;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+    margin: 0 auto;
+    margin-bottom: 30px;
+}
+
+.bottom-nav a {
+    color: #66b2ff; /* light blue */
+    text-decoration: none;
+    font-size: 18px;
+    font-family: "Roboto Condensed", sans-serif;
+    transition: 0.3s;
+}
+
+.bottom-nav a:hover {
+    color: white;
+    transform: scale(1.1);
+}
+
+.bottom-nav a img {
+    height: 60px;
+    width: 60px;
+}
