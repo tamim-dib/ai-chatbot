@@ -1,7 +1,7 @@
 const express = require("express");
 const fetch = require("node-fetch");
 
-const GEMINI_API_KEY = "AIzaSyBVvFsm15GHE5kBmvjGDGfgG-USy4pc8cg";
+const GEMINI_API_KEY = "AIzaSyBnCGbG3f3hyGTUWbQ4TXOfC1PELLTAbHM";
 
 const app = express();
 
